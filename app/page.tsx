@@ -4,7 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { GAME_CONFIG, X_URL, CA, TICKER } from "./config";
+import { X_URL, CA, TICKER } from "./config";
 import { display, ui } from "./fonts";
 import { MusicEngine } from "./music";
 import { useBank, fmtChips } from "./bank";
@@ -61,18 +61,16 @@ export default function Lobby() {
       {intro && (
         <div className={`fixed inset-0 z-[60] flex flex-col items-center justify-center text-center px-6 ${introLeaving ? "intro-leaving" : ""}`}>
           <div className="pop-in flex flex-col items-center">
-            <div className="text-sm md:text-base tracking-[0.5em] text-white/50 mb-4">WELCOME TO</div>
+            <div className="text-sm md:text-base tracking-[0.5em] text-white/50 mb-6">WELCOME TO</div>
             <div className="text-6xl md:text-8xl gold-text neon-glow leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCHBET</div>
-            <div className="text-4xl md:text-6xl gold-text leading-none mt-1" style={{ fontFamily: "var(--font-display)" }}>CASINO</div>
-            <div className="mt-8 text-xl md:text-2xl text-white/75">play poker against the trenches</div>
+            <div className="text-4xl md:text-6xl gold-text leading-none mt-2" style={{ fontFamily: "var(--font-display)" }}>CASINO</div>
 
-            <div className="mt-14 flex flex-col sm:flex-row gap-8 items-center">
-              <button onClick={() => proceed("guest")} className="neon-btn px-12 py-5 text-2xl" style={{ fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#f7d24d,#e0a51f)", color: "#2a1d00", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54288" }}>PLAY AS GUEST</button>
-              <button onClick={walletEnter} className="neon-btn px-12 py-5 text-2xl" style={{ fontFamily: "var(--font-display)", background: connected ? "linear-gradient(180deg,#7dffb0,#1fae66)" : "linear-gradient(180deg,#b89bff,#7c47e0)", color: connected ? "#063" : "#fff", ["--bc" as string]: "#a06bff", ["--gl" as string]: "#a06bff88" }}>
-                {connected ? "ENTER WITH WALLET" : "CONNECT WALLET"}
+            <div className="mt-24 flex flex-col sm:flex-row gap-12 items-center">
+              <button onClick={() => proceed("guest")} className="neon-btn px-16 py-6 text-2xl" style={{ minWidth: 290, fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#f7d24d,#e0a51f)", color: "#2a1d00", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54288" }}>PLAY AS GUEST</button>
+              <button onClick={walletEnter} className="neon-btn px-16 py-6 text-2xl" style={{ minWidth: 290, fontFamily: "var(--font-display)", background: connected ? "linear-gradient(180deg,#7dffb0,#1fae66)" : "linear-gradient(180deg,#b89bff,#7c47e0)", color: connected ? "#063" : "#fff", ["--bc" as string]: "#a06bff", ["--gl" as string]: "#a06bff88" }}>
+                {connected ? "ENTER WALLET" : "CONNECT WALLET"}
               </button>
             </div>
-            <div className="mt-12 text-sm text-white/40">play money · for fun · not real gambling</div>
           </div>
         </div>
       )}
@@ -95,55 +93,31 @@ export default function Lobby() {
         </div>
 
         {/* logo */}
-        <div className="text-center mt-10 bob select-none">
+        <div className="text-center mt-8 select-none">
           <div className="text-6xl md:text-8xl gold-text neon-glow leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCHBET</div>
-          <div className="text-3xl md:text-5xl tracking-[0.18em] text-white/85 mt-1" style={{ fontFamily: "var(--font-display)" }}>CASINO</div>
+          <div className="text-3xl md:text-5xl tracking-[0.18em] text-white/85 mt-2" style={{ fontFamily: "var(--font-display)" }}>CASINO</div>
         </div>
 
-        {/* FEATURED: POKER vs trenchers */}
-        <button onClick={() => router.push("/poker")} className="game-tile w-full max-w-5xl mt-10 px-6 py-6 flex flex-col sm:flex-row items-center gap-5 text-left"
-          style={{ background: "linear-gradient(110deg,#1a1330,#241a14 70%)", border: "2px solid #f5c542", boxShadow: "0 0 40px #f5c54233", ["--gl" as string]: "#f5c542" } as React.CSSProperties}>
-          <GameLogo id="poker" size={84} color="#f5c542" />
-          <div className="flex-1 text-center sm:text-left">
-            <div className="text-3xl md:text-4xl gold-text" style={{ fontFamily: "var(--font-display)" }}>POKER TABLE</div>
-            <div className="text-base md:text-lg text-white/70 mt-1">Texas Hold&apos;em against real trenchers. Pick your table, read the trench, take their chips.</div>
+        {/* main: daily bonus + games in a single column */}
+        <div className="flex-1 w-full max-w-2xl flex flex-col items-stretch gap-7 mt-14">
+          <button onClick={claimDaily} disabled={!bank.canClaim()} className="neon-btn self-center px-14 py-4 text-xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#2a8a4a,#1c6a38)", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a66", color: "#eafff2" }}>DAILY BONUS</button>
+
+          <GameRow id="poker" name="POKER TABLE" desc="Texas Hold'em vs the trenchers" glow="#f5c542" cta="SIT DOWN" featured onClick={() => router.push("/poker")} />
+          {GAMES.map((g) => <GameRow key={g.id} id={g.id} name={g.name} desc={g.desc} glow={g.glow} onClick={() => router.push(`/${g.id}`)} />)}
+        </div>
+
+        {/* bottom: secondary + ticker + CA + X */}
+        <div className="w-full max-w-2xl flex flex-col items-center gap-9 mt-20 pb-6">
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            <Chip2 label="RANKS" onClick={() => setModal("leaderboard")} />
+            <Chip2 label="HOW TO PLAY" onClick={() => setModal("howto")} />
+            <Chip2 label="SETTINGS" onClick={() => setModal("settings")} />
           </div>
-          <div className="neon-btn px-8 py-4 text-2xl" style={{ fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#f7d24d,#e0a51f)", color: "#2a1d00", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54266" }}>SIT DOWN</div>
-        </button>
-
-        {/* daily bonus */}
-        <button onClick={claimDaily} disabled={!bank.canClaim()}
-          className="neon-btn mt-10 px-10 py-4 text-xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#2a8a4a,#1c6a38)", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a66", color: "#eafff2" }}>
-          DAILY BONUS
-        </button>
-
-        {/* other games */}
-        <div className="text-center mt-10 text-sm tracking-[0.3em] text-white/40">MORE TABLES</div>
-        <div className="w-full max-w-5xl grid grid-cols-2 md:grid-cols-3 gap-6 mt-5">
-          {GAMES.map((g) => (
-            <button key={g.id} onClick={() => router.push(`/${g.id}`)} className="game-tile p-6 flex flex-col items-center text-center" style={{ background: "linear-gradient(180deg,#17132e,#0e0b1e)", ["--gl" as string]: g.glow } as React.CSSProperties}>
-              <GameLogo id={g.id} size={58} color={g.glow} />
-              <div className="mt-3 text-2xl" style={{ fontFamily: "var(--font-display)", color: g.glow }}>{g.name}</div>
-              <div className="text-sm text-white/45 mt-1">{g.desc}</div>
-            </button>
-          ))}
-        </div>
-
-        {/* secondary */}
-        <div className="flex flex-wrap items-center justify-center gap-5 mt-12">
-          <Chip2 label="RANKS" onClick={() => setModal("leaderboard")} />
-          <Chip2 label="HOW TO" onClick={() => setModal("howto")} />
-          <Chip2 label="SETTINGS" onClick={() => setModal("settings")} />
-        </div>
-
-        {/* ticker + CA + X */}
-        <div className="flex flex-col items-center gap-6 mt-12 w-full px-2">
-          <div className="felt-card px-8 py-3 text-2xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
+          <div className="felt-card px-10 py-3 text-2xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
           <CADisplay />
           <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Follow on X" className="neon-btn flex items-center justify-center" style={{ width: 54, height: 54, borderRadius: 14, background: "#15122a", color: "#fff", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54255" }}>
             <XIcon size={22} />
           </a>
-          <div className="text-sm text-white/30 mt-2">{GAME_CONFIG.subtitle} · play money for fun</div>
         </div>
       </div>
 
@@ -159,7 +133,21 @@ export default function Lobby() {
 }
 
 function Chip2({ label, onClick }: { label: string; onClick: () => void }) {
-  return <button onClick={onClick} className="neon-btn px-7 py-3" style={{ fontFamily: "var(--font-display)", fontSize: 15, background: "#15122a", color: "#cfc8ea", ["--bc" as string]: "#3a3458", ["--gl" as string]: "#3a345844" }}>{label}</button>;
+  return <button onClick={onClick} className="neon-btn px-9 py-3.5" style={{ fontFamily: "var(--font-display)", fontSize: 15, background: "#15122a", color: "#cfc8ea", ["--bc" as string]: "#3a3458", ["--gl" as string]: "#3a345844" }}>{label}</button>;
+}
+
+function GameRow({ id, name, desc, glow, cta, featured, onClick }: { id: string; name: string; desc: string; glow: string; cta?: string; featured?: boolean; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="game-tile w-full px-6 py-5 flex items-center gap-5 text-left"
+      style={{ background: featured ? "linear-gradient(110deg,#1a1330,#241a14 70%)" : "linear-gradient(180deg,#17132e,#0e0b1e)", border: featured ? "2px solid #f5c542" : "2px solid #2a2440", boxShadow: featured ? "0 0 36px #f5c54222" : "none", ["--gl" as string]: glow } as React.CSSProperties}>
+      <GameLogo id={id} size={featured ? 68 : 50} color={glow} />
+      <div className="flex-1 min-w-0">
+        <div style={{ fontFamily: "var(--font-display)", fontSize: featured ? 28 : 22, color: glow }}>{name}</div>
+        <div className="text-sm text-white/55 mt-1">{desc}</div>
+      </div>
+      <span className="neon-btn px-6 py-3 text-base hidden sm:inline-block" style={{ fontFamily: "var(--font-display)", background: featured ? "linear-gradient(180deg,#f7d24d,#e0a51f)" : "#15122a", color: featured ? "#2a1d00" : glow, ["--bc" as string]: glow, ["--gl" as string]: featured ? "#f5c54255" : "transparent" }}>{cta || "PLAY"}</span>
+    </button>
+  );
 }
 
 function CADisplay() {
