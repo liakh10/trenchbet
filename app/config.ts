@@ -1,6 +1,6 @@
 export const GAME_CONFIG = {
-  title: "TrenchBet Club",
-  subtitle: "Degen Casino on Solana",
+  title: "TrenchBet Casino",
+  subtitle: "Degen Poker Casino on Solana",
   network: "mainnet-beta" as const,
 };
 
