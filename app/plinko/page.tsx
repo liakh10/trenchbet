@@ -125,7 +125,7 @@ export default function PlinkoPage() {
         {last && <div className="text-lg" style={{ fontFamily: "var(--font-display)", color: last.mult >= 1 ? "#39d98a" : "#9aa0ac" }}>{last.mult}× · {last.win >= 0 ? "+" : ""}{fmtChips(last.win)}</div>}
 
         <BetControls bet={bet} setBet={setBet} />
-        <button onClick={drop} disabled={!bank.canBet(bet)} className="neon-btn px-14 py-3 text-2xl gold-text disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "#15122a", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54277" }}>DROP</button>
+        <button onClick={drop} disabled={!bank.canBet(bet)} className="neon-btn px-14 py-3 text-2xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", color: "#f5c542", background: "#15122a", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54277" }}>DROP</button>
       </div>
     </div>
   );

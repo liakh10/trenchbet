@@ -91,14 +91,14 @@ export default function MinesPage() {
               <span className="text-2xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{mult.toFixed(2)}×</span>
               <span className="text-white/50 text-sm"> · next {nextMult.toFixed(2)}×</span>
             </div>
-            <button onClick={() => cashout()} className="neon-btn px-12 py-4 text-2xl gold-text" style={{ fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#2a8a4a,#1c6a38)", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a77" }}>
+            <button onClick={() => cashout()} className="neon-btn px-12 py-4 text-2xl" style={{ fontFamily: "var(--font-display)", color: "#eafff2", background: "linear-gradient(180deg,#2a8a4a,#1c6a38)", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a77" }}>
               CASH OUT {fmtChips(potential)}
             </button>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
             <BetControls bet={bet} setBet={setBet} />
-            <button onClick={start} disabled={!bank.canBet(bet)} className="neon-btn px-14 py-4 text-2xl gold-text disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "#15122a", ["--bc" as string]: "#e6356f", ["--gl" as string]: "#e6356f77" }}>
+            <button onClick={start} disabled={!bank.canBet(bet)} className="neon-btn px-14 py-4 text-2xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", color: "#ff9db0", background: "#15122a", ["--bc" as string]: "#e6356f", ["--gl" as string]: "#e6356f77" }}>
               {busted ? "TRY AGAIN" : "START"}
             </button>
           </div>

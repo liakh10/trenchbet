@@ -104,8 +104,8 @@ export default function CrashPage() {
 
         <BetControls bet={bet} setBet={setBet} disabled={phase === "run"} />
         {phase === "run"
-          ? <button onClick={cashout} className="neon-btn px-16 py-4 text-2xl gold-text" style={{ fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#2a8a4a,#1c6a38)", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a88" }}>CASH OUT {fmtChips(Math.floor(betRef.current * mult))}</button>
-          : <button onClick={place} disabled={!bank.canBet(bet)} className="neon-btn px-16 py-4 text-2xl gold-text disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "#15122a", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a66" }}>PLACE BET</button>}
+          ? <button onClick={cashout} className="neon-btn px-16 py-4 text-2xl" style={{ fontFamily: "var(--font-display)", color: "#eafff2", background: "linear-gradient(180deg,#2a8a4a,#1c6a38)", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a88" }}>CASH OUT {fmtChips(Math.floor(betRef.current * mult))}</button>
+          : <button onClick={place} disabled={!bank.canBet(bet)} className="neon-btn px-16 py-4 text-2xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", color: "#7dffb0", background: "#15122a", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a66" }}>PLACE BET</button>}
       </div>
     </div>
   );

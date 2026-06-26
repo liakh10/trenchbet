@@ -52,7 +52,7 @@ export default function SlotsPage() {
 
         <BetControls bet={bet} setBet={setBet} disabled={spinning} />
 
-        <button onClick={spin} disabled={spinning || !bank.canBet(bet)} className="neon-btn px-16 py-4 text-2xl gold-text disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "#15122a", ["--bc" as string]: "#a06bff", ["--gl" as string]: "#a06bff77" }}>
+        <button onClick={spin} disabled={spinning || !bank.canBet(bet)} className="neon-btn px-16 py-4 text-2xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", color: "#cbb6ff", background: "#15122a", ["--bc" as string]: "#a06bff", ["--gl" as string]: "#a06bff77" }}>
           {spinning ? "SPINNING…" : "SPIN"}
         </button>
 

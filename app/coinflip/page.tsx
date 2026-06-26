@@ -50,7 +50,7 @@ export default function CoinFlipPage() {
 
         <BetControls bet={bet} setBet={setBet} disabled={flipping} />
 
-        <button onClick={flip} disabled={flipping || !bank.canBet(bet)} className="neon-btn px-14 py-4 text-2xl gold-text disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "#15122a", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54277" }}>
+        <button onClick={flip} disabled={flipping || !bank.canBet(bet)} className="neon-btn px-14 py-4 text-2xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", color: "#f5c542", background: "#15122a", ["--bc" as string]: "#f5c542", ["--gl" as string]: "#f5c54277" }}>
           {flipping ? "FLIPPING…" : "FLIP"}
         </button>
         <div className="text-xs text-white/40">win pays {PAYOUT}× your bet</div>
