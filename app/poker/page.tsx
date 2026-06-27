@@ -4,6 +4,7 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { display, ui } from "../fonts";
 import { useBank, fmtChips } from "../bank";
+import { CasinoAmbience } from "../ambience";
 import { TICKER } from "../config";
 import { getSfx } from "../sfx";
 import { TRENCHERS, randomTrenchers } from "../trenchers";
@@ -62,7 +63,8 @@ export default function PokerPage() {
   if (phase === "select") {
     return (
       <div className={`fixed inset-0 overflow-y-auto ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "radial-gradient(ellipse at 50% 0%, #143a28 0%, #0a1810 45%, #07060d 100%)" }}>
-        <div className="min-h-screen flex flex-col items-center px-4 py-8">
+        <CasinoAmbience glow="#f5c542" />
+        <div className="min-h-screen flex flex-col items-center px-4 py-8 cine-in">
           <button onClick={() => router.push("/")} className="neon-btn self-start px-4 py-2 text-sm" style={{ background: "#15122a", color: "#cfc8ea", ["--bc" as string]: "#5a5570", ["--gl" as string]: "#5a557044" }}>◀ LOBBY</button>
           <div className="text-5xl md:text-7xl gold-text neon-glow mt-4 text-center" style={{ fontFamily: "var(--font-display)" }}>POKER TABLE</div>
           <div className="text-lg text-white/70 mt-3 text-center max-w-xl">Texas Hold&apos;em against the trenchers. Pick up to 3 opponents (or leave empty for a random table), choose your buy-in, and sit down.</div>
@@ -100,6 +102,7 @@ export default function PokerPage() {
 
   return (
     <div className={`fixed inset-0 ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "#07060d" }}>
+      <CasinoAmbience glow="#f5c542" />
       {/* top bar */}
       <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3">
         <button onClick={leave} className="neon-btn px-4 py-2 text-sm" style={{ background: "#15122a", color: "#cfc8ea", ["--bc" as string]: "#5a5570", ["--gl" as string]: "#5a557044" }}>◀ LEAVE & CASH OUT</button>
@@ -206,9 +209,9 @@ function Card({ c, big, small }: { c: PCard; big?: boolean; small?: boolean }) {
   const red = c.s === 1 || c.s === 2;
   const w = big ? 44 : small ? 28 : 34, h = big ? 62 : small ? 40 : 48;
   return (
-    <div style={{ width: w, height: h, borderRadius: 5, background: "#fbf7ff", border: "1.5px solid #1a1230", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: red ? "#e6356f" : "#1a1230", fontWeight: 800, lineHeight: 1, boxShadow: "0 2px 4px rgba(0,0,0,0.4)" }}>
+    <div className="card-gloss" style={{ width: w, height: h, borderRadius: 6, background: "linear-gradient(160deg,#ffffff,#e9e4f5)", border: "1.5px solid #0d0a18", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: red ? "#e6356f" : "#1a1230", fontWeight: 800, lineHeight: 1, boxShadow: "0 4px 10px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.8)" }}>
       <span style={{ fontSize: big ? 18 : small ? 11 : 14 }}>{rankCh(c.r)}</span>
-      <span style={{ fontSize: big ? 18 : small ? 12 : 15 }}>{SUIT_CH[c.s]}</span>
+      <span style={{ fontSize: big ? 20 : small ? 13 : 16 }}>{SUIT_CH[c.s]}</span>
     </div>
   );
 }

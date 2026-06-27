@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { display, ui } from "../fonts";
 import { BalanceBar, BetControls, ChipRain } from "../components";
+import { CasinoAmbience } from "../ambience";
 import { useBank, fmtChips } from "../bank";
 import { getSfx } from "../sfx";
 
@@ -80,7 +81,9 @@ export default function PlinkoPage() {
 
       // draw
       ctx.clearRect(0, 0, W, H);
-      for (const p of pegs.current) { ctx.fillStyle = "#6a6488"; ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, 6.28); ctx.fill(); }
+      ctx.shadowColor = "#b9b2e8"; ctx.shadowBlur = 6;
+      for (const p of pegs.current) { ctx.fillStyle = "#8c86b8"; ctx.beginPath(); ctx.arc(p.x, p.y, 2.6, 0, 6.28); ctx.fill(); }
+      ctx.shadowBlur = 0;
       const mult = MULTS[riskRef.current];
       for (let i = 0; i < BINS; i++) {
         const x = BIN_LEFT + i * SX, m = mult[i];
@@ -92,8 +95,13 @@ export default function PlinkoPage() {
         ctx.fillStyle = fy ? "#1a1230" : col; ctx.font = "bold 9px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
         ctx.fillText(m + "x", x + SX / 2, 383);
       }
-      ctx.fillStyle = "#f5c542";
-      for (const b of balls.current) { ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, 6.28); ctx.fill(); ctx.strokeStyle = "#fff3b0"; ctx.lineWidth = 1; ctx.stroke(); }
+      for (const b of balls.current) {
+        for (let k = 3; k >= 1; k--) { ctx.globalAlpha = 0.12 * k; ctx.fillStyle = "#f5c542"; ctx.beginPath(); ctx.arc(b.x - b.vx * 0.012 * k, b.y - b.vy * 0.012 * k, 5 - k * 0.6, 0, 6.28); ctx.fill(); }
+        ctx.globalAlpha = 1; ctx.shadowColor = "#f5c542"; ctx.shadowBlur = 14;
+        const grad = ctx.createRadialGradient(b.x - 1.5, b.y - 1.5, 1, b.x, b.y, 5);
+        grad.addColorStop(0, "#fff3b0"); grad.addColorStop(1, "#e0a51f");
+        ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, 6.28); ctx.fill(); ctx.shadowBlur = 0;
+      }
 
       raf = requestAnimationFrame(loop);
     };
@@ -110,9 +118,10 @@ export default function PlinkoPage() {
 
   return (
     <div className={`fixed inset-0 ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "radial-gradient(ellipse at 50% 0%, #3a2e08 0%, #14110a 50%, #07060d 100%)" }}>
+      <CasinoAmbience glow="#f5c542" />
       <BalanceBar title="PLINKO" accent="#f5c542" />
       {rain && <ChipRain />}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pt-14 px-4">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pt-14 px-4 cine-in">
         <div className="flex items-center gap-2">
           <span className="text-xs text-white/50">RISK</span>
           {(["low", "med", "high"] as const).map((r) => (

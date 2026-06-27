@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { display, ui } from "../fonts";
 import { BalanceBar, BetControls, ResultPopup } from "../components";
+import { CasinoAmbience } from "../ambience";
 import { useBank, fmtChips } from "../bank";
 import { getSfx } from "../sfx";
 
@@ -56,8 +57,9 @@ export default function MinesPage() {
 
   return (
     <div className={`fixed inset-0 ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "radial-gradient(ellipse at 50% 0%, #3a1024 0%, #14070f 50%, #07060d 100%)" }}>
+      <CasinoAmbience glow="#e6356f" spot="#3a1024" />
       <BalanceBar title="MINES" accent="#e6356f" />
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 pt-16 px-4">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 pt-16 px-4 cine-in">
         {/* mines count */}
         <div className="flex items-center gap-2">
           <span className="text-xs text-white/50">MINES</span>

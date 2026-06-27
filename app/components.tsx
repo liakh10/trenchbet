@@ -50,13 +50,14 @@ export function ResultPopup({ result, onDone }: { result: { win: boolean; amount
   if (!result) return null;
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none" onClick={onDone}>
+      {result.win && <div className="absolute inset-0 gold-flash" style={{ background: "radial-gradient(circle at 50% 45%, #fff3b0, rgba(245,197,66,0.33) 45%, transparent 75%)" }} />}
       {result.win && <ChipRain />}
-      <div className="win-pulse text-center">
-        <div style={{ fontFamily: "var(--font-display)", fontSize: 52, color: result.win ? "#39d98a" : "#e6356f", filter: result.win ? "drop-shadow(0 0 24px #39d98a88)" : "drop-shadow(0 0 16px #e6356f66)" }}>
+      <div className={`text-center ${result.win ? "win-pulse" : "shake"}`}>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: 64, color: result.win ? "#39d98a" : "#e6356f", textShadow: result.win ? "0 0 30px #39d98a, 0 0 64px rgba(57,217,138,0.5)" : "0 0 26px rgba(230,53,111,0.6)" }}>
           {result.text || (result.win ? "WIN!" : "BUST")}
         </div>
         {result.amount > 0 && (
-          <div className="mt-1 text-2xl" style={{ fontFamily: "var(--font-display)", color: result.win ? "#f5c542" : "#9aa0ac" }}>
+          <div className="mt-2 text-3xl" style={{ fontFamily: "var(--font-display)", color: result.win ? "#f5c542" : "#9aa0ac", textShadow: result.win ? "0 0 18px rgba(245,197,66,0.6)" : "none" }}>
             {result.win ? "+" : "-"}{fmtChips(result.amount)} {TICKER.replace("$", "")}
           </div>
         )}

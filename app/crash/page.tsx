@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { display, ui } from "../fonts";
 import { BalanceBar, BetControls, ChipRain } from "../components";
+import { CasinoAmbience } from "../ambience";
 import { useBank, fmtChips } from "../bank";
 import { getSfx } from "../sfx";
 
@@ -68,11 +69,20 @@ export default function CrashPage() {
       if (arr.length > 1) {
         const maxM = Math.max(2, mult * 1.1); const maxT = Math.max(1, arr[arr.length - 1].t);
         const col = p === "crash" ? "#e6356f" : "#39d98a";
-        ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.beginPath();
-        arr.forEach((pt, i) => { const x = (pt.t / maxT) * (W - 10) + 5; const y = H - 8 - ((pt.m - 1) / (maxM - 1)) * (H - 24); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
-        ctx.stroke();
-        const lp = arr[arr.length - 1]; const lx = (lp.t / maxT) * (W - 10) + 5; const ly = H - 8 - ((lp.m - 1) / (maxM - 1)) * (H - 24);
-        ctx.fillStyle = col; ctx.beginPath(); ctx.arc(lx, ly, 5, 0, 6.28); ctx.fill();
+        const X = (t: number) => (t / maxT) * (W - 10) + 5;
+        const Y = (m: number) => H - 8 - ((m - 1) / (maxM - 1)) * (H - 24);
+        // glow fill under the curve
+        ctx.beginPath(); ctx.moveTo(X(arr[0].t), H);
+        arr.forEach((pt) => ctx.lineTo(X(pt.t), Y(pt.m)));
+        ctx.lineTo(X(arr[arr.length - 1].t), H); ctx.closePath();
+        const fg = ctx.createLinearGradient(0, 0, 0, H); fg.addColorStop(0, col + "55"); fg.addColorStop(1, col + "00");
+        ctx.fillStyle = fg; ctx.fill();
+        // glowing line
+        ctx.shadowColor = col; ctx.shadowBlur = 14; ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineJoin = "round";
+        ctx.beginPath(); arr.forEach((pt, i) => { const x = X(pt.t), y = Y(pt.m); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }); ctx.stroke(); ctx.shadowBlur = 0;
+        const lp = arr[arr.length - 1]; const lx = X(lp.t), ly = Y(lp.m);
+        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(lx, ly, 5.5, 0, 6.28); ctx.fill();
+        ctx.fillStyle = col; ctx.beginPath(); ctx.arc(lx, ly, 3.5, 0, 6.28); ctx.fill();
       }
       raf = requestAnimationFrame(loop);
     };
@@ -85,9 +95,10 @@ export default function CrashPage() {
 
   return (
     <div className={`fixed inset-0 ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "radial-gradient(ellipse at 50% 0%, #0a2a1e 0%, #08140f 50%, #07060d 100%)" }}>
+      <CasinoAmbience glow="#39d98a" />
       <BalanceBar title="CRASH" accent="#39d98a" />
       {rain && <ChipRain />}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pt-14 px-4">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pt-14 px-4 cine-in">
         {/* history */}
         <div className="flex gap-1.5 flex-wrap justify-center max-w-md">
           {history.map((h, i) => <span key={i} className="px-2 py-0.5 rounded text-[11px]" style={{ background: h >= 2 ? "#143a28" : "#3a1420", color: h >= 2 ? "#5dffa0" : "#ff8aa0", fontWeight: 700 }}>{h.toFixed(2)}×</span>)}

@@ -69,6 +69,22 @@ body {
 @keyframes winPulse { 0% { transform: scale(0.6); opacity: 0; } 40% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 .win-pulse { animation: winPulse 0.5s cubic-bezier(.2,.9,.3,1.4) both; }
 
+/* ── cinematic atmosphere ── */
+@keyframes lightSweep { 0% { transform: translate(-30%, -30%) rotate(0deg); } 100% { transform: translate(-30%, -30%) rotate(360deg); } }
+.light-sweep { animation: lightSweep 26s linear infinite; }
+@keyframes dustRise { 0% { transform: translateY(0) translateX(0); opacity: 0; } 12% { opacity: var(--o, 0.5); } 88% { opacity: var(--o, 0.5); } 100% { transform: translateY(-110vh) translateX(20px); opacity: 0; } }
+.dust { animation: dustRise linear infinite; }
+@keyframes grainShift { 0% { transform: translate(0, 0); } 25% { transform: translate(-4%, 3%); } 50% { transform: translate(3%, -2%); } 75% { transform: translate(-2%, 4%); } 100% { transform: translate(0, 0); } }
+.grain { animation: grainShift 0.6s steps(3) infinite; }
+@keyframes cineIn { 0% { opacity: 0; transform: scale(1.04) translateY(10px); filter: blur(6px); } 100% { opacity: 1; transform: none; filter: blur(0); } }
+.cine-in { animation: cineIn 0.6s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes goldFlash { 0% { opacity: 0; } 25% { opacity: 0.9; } 100% { opacity: 0; } }
+.gold-flash { animation: goldFlash 0.7s ease-out forwards; }
+@keyframes shakeX { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(9px); } 60% { transform: translateX(-7px); } 80% { transform: translateX(5px); } }
+.shake { animation: shakeX 0.45s ease; }
+.card-gloss { position: relative; }
+.card-gloss::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(155deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 28%, transparent 50%); pointer-events: none; }
+
 .wallet-adapter-modal-wrapper { font-family: var(--font-ui), sans-serif !important; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: #2a2440; border-radius: 4px; }

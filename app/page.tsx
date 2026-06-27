@@ -11,6 +11,7 @@ import { useBank, fmtChips } from "./bank";
 import { Chip, XIcon } from "./components";
 import { GameLogo } from "./icons";
 import { PokerBg } from "./pokerbg";
+import { CasinoAmbience } from "./ambience";
 
 const GAMES = [
   { id: "plinko", name: "PLINKO", desc: "drop & multiply", glow: "#f5c542" },
@@ -56,6 +57,7 @@ export default function Lobby() {
   return (
     <main className={`fixed inset-0 overflow-y-auto ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "#07060d" }}>
       <PokerBg blur={intro ? 6 : 9} dim={intro ? 0.5 : 0.72} />
+      <CasinoAmbience glow="#f5c542" intensity={0.7} />
 
       {/* INTRO GATE: choose guest or wallet before playing */}
       {intro && (

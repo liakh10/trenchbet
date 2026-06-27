@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { display, ui } from "../fonts";
 import { BalanceBar, BetControls, ResultPopup } from "../components";
+import { CasinoAmbience } from "../ambience";
 import { useBank } from "../bank";
 import { getSfx } from "../sfx";
 
@@ -40,8 +41,9 @@ export default function SlotsPage() {
 
   return (
     <div className={`fixed inset-0 ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "radial-gradient(ellipse at 50% 0%, #2a1040 0%, #120a22 50%, #07060d 100%)" }}>
+      <CasinoAmbience glow="#a06bff" spot="#2a1040" />
       <BalanceBar title="SLOTS" accent="#a06bff" />
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 pt-16 px-4">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 pt-16 px-4 cine-in">
         <div className="felt-card flex gap-3 p-4" style={{ border: "3px solid #a06bff", boxShadow: "0 0 40px #a06bff44" }}>
           {reels.map((s, i) => (
             <div key={i} className="flex items-center justify-center" style={{ width: 92, height: 110, borderRadius: 12, background: "linear-gradient(180deg,#0d0b1c,#1a1730)", border: "2px solid #2a2440", fontSize: 56 }}>

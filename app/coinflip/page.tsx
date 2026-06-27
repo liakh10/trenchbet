@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { display, ui } from "../fonts";
 import { BalanceBar, BetControls, ResultPopup } from "../components";
+import { CasinoAmbience } from "../ambience";
 import { useBank } from "../bank";
 import { getSfx } from "../sfx";
 
@@ -34,8 +35,9 @@ export default function CoinFlipPage() {
 
   return (
     <div className={`fixed inset-0 ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "radial-gradient(ellipse at 50% 0%, #15233a 0%, #0b1018 50%, #07060d 100%)" }}>
+      <CasinoAmbience glow="#19e0ff" spot="#15233a" />
       <BalanceBar title="COIN FLIP" accent="#19e0ff" />
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 pt-16 px-4">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 pt-16 px-4 cine-in">
         <div className={flipping ? "bob" : ""} style={{ width: 150, height: 150, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 78, background: face === "bull" ? "radial-gradient(circle at 35% 30%,#7dffb0,#1fae66 60%,#0d6b3c)" : "radial-gradient(circle at 35% 30%,#ff9db0,#e6356f 60%,#8a1838)", border: "5px solid #fff3b0", boxShadow: `0 0 40px ${face === "bull" ? "#39d98a88" : "#e6356f88"}` }}>
           {face === "bull" ? "🐂" : "🐻"}
         </div>
