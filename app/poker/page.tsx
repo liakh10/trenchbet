@@ -7,7 +7,7 @@ import { useBank, fmtChips } from "../bank";
 import { CasinoAmbience } from "../ambience";
 import { TICKER } from "../config";
 import { getSfx } from "../sfx";
-import { TRENCHERS, randomTrenchers } from "../trenchers";
+import { MEMES, MemeAvatar, memeByName, randomMemes } from "../memes";
 import { PokerGame, Card as PCard, SUIT_CH, rankCh, handName } from "./engine";
 
 const BUYINS = [500, 1000, 2500];
@@ -26,7 +26,8 @@ export default function PokerPage() {
 
   function togglePick(n: string) { setPicked((p) => p.includes(n) ? p.filter((x) => x !== n) : p.length >= 3 ? p : [...p, n]); }
   function sit() {
-    const opps = picked.length ? picked : randomTrenchers(3);
+    const oppMemes = picked.length ? picked.map((id) => MEMES.find((m) => m.id === id)!) : randomMemes(3);
+    const opps = oppMemes.map((m) => m.name);
     const bi = Math.min(buyIn, bank.balance);
     if (!bank.bet(bi)) return;
     const playerName = (() => { try { const s = sessionStorage.getItem("trenchbet_player"); if (s) { const j = JSON.parse(s); if (j.mode === "wallet" && j.address) return `${j.address.slice(0, 4)}…`; } } catch { /* */ } return "YOU"; })();
@@ -77,14 +78,20 @@ export default function PokerPage() {
           </div>
 
           <div className="text-sm tracking-[0.3em] text-white/40 mt-10">PICK TRENCHERS ({picked.length}/3)</div>
-          <div className="w-full max-w-3xl grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
-            {TRENCHERS.slice(0, 24).map((t) => (
-              <button key={t} onClick={() => togglePick(t)} className="px-3 py-2.5 rounded-lg text-sm transition-all" style={{ background: picked.includes(t) ? "rgba(245,197,66,0.16)" : "rgba(255,255,255,0.04)", border: picked.includes(t) ? "2px solid #f5c542" : "2px solid #2a2440", color: picked.includes(t) ? "#f5c542" : "#cfc8ea", fontWeight: 600 }}>{t}</button>
-            ))}
+          <div className="w-full max-w-3xl grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+            {MEMES.map((m) => {
+              const on = picked.includes(m.id);
+              return (
+                <button key={m.id} onClick={() => togglePick(m.id)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" style={{ background: on ? "rgba(245,197,66,0.16)" : "rgba(255,255,255,0.04)", border: on ? "2px solid #f5c542" : "2px solid #2a2440" }}>
+                  <MemeAvatar id={m.id} size={40} ring={on ? "#f5c542" : undefined} />
+                  <span style={{ color: on ? "#f5c542" : "#cfc8ea", fontWeight: 600, fontSize: 14 }}>{m.name}</span>
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex gap-5 mt-12 mb-10">
-            <button onClick={() => setPicked(randomTrenchers(3))} className="neon-btn px-8 py-4 text-xl" style={{ fontFamily: "var(--font-display)", background: "#15122a", color: "#cbb6ff", ["--bc" as string]: "#a06bff", ["--gl" as string]: "#a06bff55" }}>RANDOM</button>
+            <button onClick={() => setPicked(randomMemes(3).map((m) => m.id))} className="neon-btn px-8 py-4 text-xl" style={{ fontFamily: "var(--font-display)", background: "#15122a", color: "#cbb6ff", ["--bc" as string]: "#a06bff", ["--gl" as string]: "#a06bff55" }}>RANDOM</button>
             <button onClick={sit} disabled={bank.balance < 10} className="neon-btn px-12 py-4 text-2xl disabled:opacity-40" style={{ fontFamily: "var(--font-display)", background: "linear-gradient(180deg,#2a8a4a,#1c6a38)", color: "#eafff2", ["--bc" as string]: "#39d98a", ["--gl" as string]: "#39d98a77" }}>SIT DOWN</button>
           </div>
         </div>
@@ -110,6 +117,9 @@ export default function PokerPage() {
         <div className="felt-card px-4 py-2 text-sm" style={{ color: "#f5c542", fontFamily: "var(--font-display)" }}>BANK {fmtChips(bank.balance)}</div>
       </div>
 
+      {/* players panel — trenchers at the table + what they've farmed */}
+      <PlayersPanel opps={opps} />
+
       {/* felt table */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative" style={{ width: "min(94vw, 860px)", height: "min(70vh, 540px)", borderRadius: "50%", background: "radial-gradient(ellipse at 50% 45%, #1f7a4e, #124a30 70%, #0c3320)", border: "14px solid #3a2a18", boxShadow: "0 0 60px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.4)" }}>
@@ -122,7 +132,7 @@ export default function PokerPage() {
 
           {/* opponents */}
           {opps.map((p, i) => (
-            <Seat key={i} p={p} pos={seatPos[i]} dealer={g.dealer === g.players.indexOf(p)} toAct={g.current === g.players.indexOf(p) && !handOver} reveal={g.showCards} winner={g.winners.includes(g.players.indexOf(p))} community={g.community} />
+            <Seat key={i} p={p} memeId={memeByName.get(p.name)?.id} pos={seatPos[i]} dealer={g.dealer === g.players.indexOf(p)} toAct={g.current === g.players.indexOf(p) && !handOver} reveal={g.showCards} winner={g.winners.includes(g.players.indexOf(p))} community={g.community} />
           ))}
 
           {/* you */}
@@ -181,9 +191,14 @@ function RaiseMenu({ legal, pot, currentBet, onRaise }: { legal: { minRaiseTo: n
   );
 }
 
-function Seat({ p, pos, dealer, toAct, reveal, winner, community }: { p: { name: string; stack: number; hole: PCard[]; folded: boolean; bet: number; lastAction: string; allIn: boolean }; pos: { x: string; y: string }; dealer: boolean; toAct: boolean; reveal: boolean; winner: boolean; community: PCard[] }) {
+function Seat({ p, memeId, pos, dealer, toAct, reveal, winner, community }: { p: { name: string; stack: number; hole: PCard[]; folded: boolean; bet: number; lastAction: string; allIn: boolean }; memeId?: string; pos: { x: string; y: string }; dealer: boolean; toAct: boolean; reveal: boolean; winner: boolean; community: PCard[] }) {
   return (
     <div className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1" style={{ left: pos.x, top: pos.y, opacity: p.folded ? 0.4 : 1 }}>
+      {memeId && (
+        <div style={{ filter: winner ? "drop-shadow(0 0 8px #f5c542)" : toAct ? "drop-shadow(0 0 7px #19e0ff)" : "none", transition: "filter 0.2s" }}>
+          <MemeAvatar id={memeId} size={40} ring={winner ? "#f5c542" : toAct ? "#19e0ff" : undefined} />
+        </div>
+      )}
       <div className="flex gap-1">{p.folded ? <CardBack faded /> : reveal ? p.hole.map((c, i) => <Card key={i} c={c} small />) : [<CardBack key="a" small />, <CardBack key="b" small />]}</div>
       <div className="felt-card px-3 py-1 flex flex-col items-center" style={{ border: winner ? "2px solid #f5c542" : toAct ? "2px solid #19e0ff" : "2px solid #2a2440", boxShadow: winner ? "0 0 16px #f5c54266" : "none" }}>
         <div className="flex items-center gap-1.5">
@@ -194,6 +209,27 @@ function Seat({ p, pos, dealer, toAct, reveal, winner, community }: { p: { name:
         {p.bet > 0 && <span className="text-[10px] text-[#ffe79a]">bet {p.bet}</span>}
         {p.lastAction && !p.bet && <span className="text-[10px] text-white/50">{p.lastAction}</span>}
         {winner && reveal && !p.folded && <span className="text-[10px] text-[#f5c542]">{handName([...p.hole, ...community])}</span>}
+      </div>
+    </div>
+  );
+}
+
+function PlayersPanel({ opps }: { opps: { name: string; stack: number; folded: boolean }[] }) {
+  const rows = opps.map((p) => ({ p, m: memeByName.get(p.name) })).sort((a, b) => b.p.stack - a.p.stack);
+  const lead = rows[0]?.p.stack ?? 0;
+  return (
+    <div className="absolute top-14 right-2 z-30 felt-card px-2.5 py-2 sm:px-3 sm:py-2.5" style={{ background: "rgba(13,11,28,0.78)", backdropFilter: "blur(4px)", maxWidth: "44vw" }}>
+      <div className="text-[9px] sm:text-[10px] tracking-[0.2em] text-white/45 mb-1.5 text-center" style={{ fontFamily: "var(--font-display)" }}>FARMED {TICKER}</div>
+      <div className="flex flex-col gap-1.5">
+        {rows.map(({ p, m }, i) => (
+          <div key={i} className="flex items-center gap-2" style={{ opacity: p.folded ? 0.45 : 1 }}>
+            <MemeAvatar id={m?.id ?? "wojak"} size={22} ring={i === 0 && lead > 0 ? "#f5c542" : undefined} />
+            <div className="leading-tight min-w-0">
+              <div className="truncate" style={{ fontSize: 11, color: "#fff", fontWeight: 600, maxWidth: 92 }}>{i === 0 && lead > 0 ? "👑 " : ""}{p.name}</div>
+              <div style={{ fontSize: 11, color: "#39d98a", fontFamily: "var(--font-display)" }}>{fmtChips(p.stack)}</div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
