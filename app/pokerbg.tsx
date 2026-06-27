@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 // Animated blurred poker-table background: green felt + drifting chips & cards.
-export function PokerBg({ blur = 7, dim = 0.55 }: { blur?: number; dim?: number }) {
+export function PokerBg({ blur = 7, dim = 0.55, opacity = 1 }: { blur?: number; dim?: number; opacity?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current!; const ctx = canvas.getContext("2d")!;
@@ -53,7 +53,7 @@ export function PokerBg({ blur = 7, dim = 0.55 }: { blur?: number; dim?: number 
   }, []);
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none">
+    <div className="fixed inset-0 z-0 pointer-events-none" style={{ opacity }}>
       <canvas ref={ref} style={{ width: "100%", height: "100%", filter: `blur(${blur}px) saturate(1.1)` }} />
       <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 50% 45%, rgba(7,6,13,${dim * 0.5}) 0%, rgba(7,6,13,${dim}) 70%, rgba(7,6,13,0.96) 100%)` }} />
     </div>

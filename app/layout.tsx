@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SolanaProviders } from "./providers";
+import { TICKER } from "./config";
 
 export const metadata: Metadata = {
-  title: "TrenchBet Club",
+  title: TICKER,
   description: "Degen casino arcade on Solana. Play chips for fun: Plinko, Crash, Mines, Slots and Coin Flip.",
 };
 

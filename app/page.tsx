@@ -56,7 +56,11 @@ export default function Lobby() {
 
   return (
     <main className={`fixed inset-0 overflow-y-auto ${display.variable} ${ui.variable}`} style={{ fontFamily: "var(--font-ui)", background: "#07060d" }}>
-      <PokerBg blur={intro ? 6 : 9} dim={intro ? 0.5 : 0.72} />
+      {/* base layer: the blurred club photo — sets the whole mood */}
+      <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: "url(/bg-blur.jpg)", backgroundSize: "cover", backgroundPosition: "center", transform: "scale(1.08)" }} />
+      <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 38%, rgba(7,6,13,0.32), rgba(7,6,13,0.82) 72%, rgba(7,6,13,0.96))" }} />
+      {/* drifting felt/chips, dialled back so the photo reads through */}
+      <PokerBg blur={intro ? 6 : 9} dim={intro ? 0.5 : 0.72} opacity={0.5} />
       <CasinoAmbience glow="#f5c542" intensity={0.7} />
 
       {/* INTRO GATE: choose guest or wallet before playing */}
