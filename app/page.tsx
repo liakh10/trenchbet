@@ -157,10 +157,32 @@ function CADisplay() {
   const isReal = CA !== "SOON" && CA !== "";
   function copy() { if (!isReal) return; navigator.clipboard.writeText(CA); setCopied(true); setTimeout(() => setCopied(false), 1500); }
   return (
-    <div className="felt-card inline-flex items-center justify-center gap-2 px-5 py-3 mx-auto" style={{ whiteSpace: "nowrap", maxWidth: "94vw" }}>
+    // inline-flex => box width grows to fit content; maxWidth caps it to viewport.
+    <div className="felt-card inline-flex items-center gap-3 px-5 py-3 mx-auto" style={{ maxWidth: "94vw" }}>
       <span className="shrink-0" style={{ color: "#f5c542", fontWeight: 800, fontSize: 15 }}>CA:</span>
-      <span style={{ color: copied ? "#39d98a" : isReal ? "#e9e2ff" : "#7a7496", fontWeight: 600, fontSize: "clamp(9px, 2.6vw, 15px)" }}>{copied ? "COPIED!" : CA}</span>
-      {isReal && <button onClick={copy} aria-label="Copy CA" className="shrink-0 flex items-center justify-center cursor-pointer" style={{ width: 28, height: 28, border: "2px solid #f5c542", borderRadius: 6, color: copied ? "#39d98a" : "#f5c542" }}>{copied ? "✓" : "⧉"}</button>}
+      {/* address always on ONE line; scrolls horizontally on narrow screens instead of shrinking/wrapping */}
+      <span
+        onClick={copy}
+        title={isReal ? CA : undefined}
+        style={{
+          color: copied ? "#39d98a" : isReal ? "#e9e2ff" : "#7a7496",
+          fontWeight: 600,
+          fontSize: 15,
+          fontFamily: isReal ? "var(--font-mono, ui-monospace, monospace)" : "inherit",
+          letterSpacing: isReal ? "0.3px" : "normal",
+          whiteSpace: "nowrap",
+          overflowX: "auto",
+          maxWidth: "100%",
+          cursor: isReal ? "pointer" : "default",
+        }}
+      >
+        {copied ? "COPIED!" : CA}
+      </span>
+      {isReal && (
+        <button onClick={copy} aria-label="Copy CA" className="shrink-0 flex items-center justify-center cursor-pointer" style={{ width: 30, height: 30, border: "2px solid #f5c542", borderRadius: 6, color: copied ? "#39d98a" : "#f5c542", fontSize: 15, background: "transparent" }}>
+          {copied ? "✓" : "⧉"}
+        </button>
+      )}
     </div>
   );
 }
